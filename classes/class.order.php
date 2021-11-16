@@ -86,6 +86,7 @@ public static function removeItem($item){
             }	
 }
 
+
 public static function removeTopping($item){
 	try{ 
 	$user_id = User::isLoggedIn();
@@ -124,6 +125,51 @@ public static function removeMenuItem($id){
 	
 public static function fetchOrders($user_id){	
 return DatabaseConnector::query('SELECT * FROM order_cart WHERE user_id=:userid', array(':userid'=>$user_id));
+}
+
+
+
+public static function getOrderName($item_id){	
+	try{ 
+	if(DatabaseConnector::query('SELECT name FROM menu_items WHERE id=:itemid', array(':itemid'=>$item_id))){
+	return DatabaseConnector::query('SELECT name FROM menu_items WHERE id=:itemid', array(':itemid'=>$item_id))[0]["name"];
+	}
+            throw new Exception('Error: Name undefined!');
+	}	catch (Exception $e) {
+                $GLOBALS['errors'][] = $e->getMessage();
+            }
+}
+
+public static function getOrderDescription($item_id){	
+	try{ 
+	if(DatabaseConnector::query('SELECT description FROM menu_items WHERE id=:itemid', array(':itemid'=>$item_id))){
+	return DatabaseConnector::query('SELECT description FROM menu_items WHERE id=:itemid', array(':itemid'=>$item_id))[0]["description"];
+	}
+            throw new Exception('Error: Description undefined!');
+	}	catch (Exception $e) {
+                $GLOBALS['errors'][] = $e->getMessage();
+            }
+}
+
+public static function getOrderPrice($item_id){	
+	try{ 
+	if(DatabaseConnector::query('SELECT price FROM menu_items WHERE id=:itemid', array(':itemid'=>$item_id))){
+	return DatabaseConnector::query('SELECT price FROM menu_items WHERE id=:itemid', array(':itemid'=>$item_id))[0]["price"];
+	}
+            throw new Exception('Error: Price undefined!');
+	}	catch (Exception $e) {
+                $GLOBALS['errors'][] = $e->getMessage();
+            }
+}
+
+public static function fetchOrderTotals(){	
+return DatabaseConnector::query('SELECT SUM(t.price) FROM menu_items AS t 
+   INNER JOIN order_cart AS tr 
+   ON t.id = tr.item_id')[0]["SUM(t.price)"];
+}
+
+public static function fetchTotalOrders(){	
+return DatabaseConnector::query('SELECT COUNT(*) from order_cart')[0]["COUNT(*)"];
 }
 
 

@@ -1,4 +1,7 @@
 <?php
+
+	$currentView = "../frontend/admin/home/main.php";
+
 if($_SERVER['REQUEST_METHOD'] == "POST"){
 	if(isset($_POST["id"]) && isset($_POST["insert"])){
 	$item = $_POST["id"];
@@ -13,15 +16,39 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 	}
 	elseif(isset($_POST["adminremove"])){
 	order::removeMenuItem($_POST["id"]);
+	}
+	elseif(isset($_POST["adminitemremove"])){
+	admin::removeItem($_POST["id"], $_POST["user_id"]);
 	}		
 }
 
 if($_SERVER["REQUEST_METHOD"] == "GET"){
-	if(isset($_GET['viewitems']) || isset($_GET['additems']) || isset($_GET['removeitems'])){
-	} else {
-		header("location:./admin?viewitems=true");
+	if(isset($_GET['menu'])){
+		if($_GET['menu']==="view"){
+				$currentView = "../frontend/admin/menu/main.php";
+		}
+		else if($_GET['menu']==="additems"){
+				$currentView = "../frontend/admin/menu/additems.php";
+		}
+		else if($_GET['menu']==="removeitems"){
+				$currentView = "../frontend/admin/menu/removeitems.php";
+		}		
+		else {
+		header("location:./admin?menu=view");
+	}
+	}
+	else if(isset($_GET['orders'])){
+		if($_GET['orders']==="view"){
+			$orders=admin::getPendingOrders();
+				$currentView = "../frontend/admin/orders/main.php";
+				
+		}	
+		else {
+		header("location:./admin?orders=view");
+	}
 	}
 }
+
 
 
 ?>
