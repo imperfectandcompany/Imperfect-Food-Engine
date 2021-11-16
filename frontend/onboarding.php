@@ -1,11 +1,9 @@
-
-<!-- navbar -->
 <header>
   <nav class="shadow items-center  md:pl-48 p-3 bg-green-500 text-white">
     <div x-data="{ open: false }" class="flex-1 md:flex">
       <div class="flex items-center flex-1">
         <a href="./">
-          <div class=" md:flex-1 mr-2 text-white select-none font-bold">Food Engine - Home</div>
+          <div class=" md:flex-1 mr-2 text-white select-none font-bold">Food Engine - Onboarding</div>
         </a>
         <button @click="open = ! open" class="md:hidden ml-auto rounded px-4 py-2 focus:outline-none bg-green-400">
           <template x-if="!open">
@@ -26,7 +24,7 @@
         </a>
 		</div>
 		<div>
-        <a href="./home">
+        <a href="./">
           <div class="text-center md:ml-2 md:text-left bg-green-400 transition hover:bg-green-700 hover:text-green-600 select-none cursor-pointer px-4 py-2 rounded text-white"> Home </div>
         </a>
 		</div>
@@ -34,31 +32,53 @@
     </div>
   </nav>
 </header>
-   <div class="lg:flex">
-<main class="w-full flex justify-center">
+<main class="bg-white max-w-md mx-auto p-8 md:p-12 md:my-10 rounded lg:shadow-lg md:shadow-md sm:shadow-sm">
+        <section>
+		<div class="pb-8">
 <?php
-   /*Call our notification handling*/ include("../frontend/sitenotif.php");
-   ?>
-    <div class="flex flex-col md:w-2/5 p-3 my-32 space-y-5 rounded-xl border border-green-500 shadow-lg bg-green-200">
-        <section class="text-3xl text-green undeerline font-bold">
-			YO <span class="text-underline text-green-800"><?php echo $profile ?></span>,<br> what are we feeling?
+/*Call our notification handling*/ include("../frontend/sitenotif.php");
+?>
+
+<?php if($userwarning == 0): ?>
+			<div class="pt-8">	
+           <div class="bg-yellow-200 border-l-4 border-yellow-300 text-yellow-800 p-4">
+  <p class="font-bold">Welcome...</p>
+  <p>Choose a username to continue.</p>
+</div>
+</div>
+<?php endif; ?>
+
+<?php if($success === "username"): ?>
+			<div class="pt-8">	
+           <div class="bg-green-200 border-l-4 border-green-300 text-green-800 p-4">
+  <p class="font-bold">Success!</p>
+  <p>You have set your username.</p>
+  <p>Loading...<?php header('Refresh: 1; URL=./home');?></p>
+</div>
+</div>				
+<?php endif; ?>
         </section>
-        <section class="font-normal text-md text-gray-700">
-	<div class="flex flex-wrap m-auto">
-		<button onclick="window.location.href='order?type=delivery'" class="rounded px-3 py-2 m-1 border-b-4 border-l-2 shadow-lg bg-green-700 border-green-800 text-white">
-        Delivery
-    </button>
-		<button onclick="window.location.href='order?type=takeout'" class="rounded px-3 py-2 m-1 border-b-4 border-l-2 shadow-lg bg-green-700 border-green-800 text-white">
-        Take-out
-    </button>
-		<button onclick="window.location.href='order?type=dine-in'" class="rounded px-3 py-2 m-1 border-b-4 border-l-2 shadow-lg bg-green-700 border-green-800 text-white">
-        Dine-in
-    </button>	
-	</div>
+		<?php if($success == 0): ?>		
+        <section>	
+            <form class="flex flex-col" method="post">
+                <div class="mb-6 pt-3 rounded">
+                    <label class="block text-gray-400 text-small font-bold mb-2 ml-3" for="username">Username</label>
+                    <input type="text" id="username" type="username" name="username" value="<?php echo htmlspecialchars($username, ENT_QUOTES); ?>""
+                           class="w-full text-gray-700 focus:outline-none border-b-4 border-gray-200 focus:border-green-600 transition duration-500 px-3 pb-3" <?php if($success === "username"): ?>readonly<?php endif; ?>/>
+                </div>     
+                <button type="submit" name="changeusername" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 focus:outline-none rounded shadow-md hover:shadow-xl transition duration-200" <?php if($success === "username"): ?>disabled<?php endif; ?>>Continue</button>
+            </form>
+			<br>
+			<hr>			
+			<section>
+                <div class="flex flex-col max-w-lg mx-auto text-center mt-12">
+
+                <a href="./logout" class="border border-green-600 bg-white hover:bg-gray-100 hover:border-green-300 hover:text-green-400 text-green-500 font-bold py-2 focus:outline-none rounded shadow-sm hover:shadow-md transition duration-200">Log Out</a>
+                </div>
+			</section>		
         </section>
-    </div>
-</main>
-   </div>
+			<?php endif; ?>	
+    </main>
     <footer>
   <!-- Foooter -->
   <section class="bg-white">
@@ -67,12 +87,6 @@
         <div class="px-5 py-2"> <a href="./" class="text-base leading-6 text-gray-500 hover:text-gray-900">
           Home
         </a> </div>
-        <div class="md:hidden">
-          <hr>
-        </div>
-        <div class="px-5 py-2"> <a href="admin" class="text-base leading-6 text-gray-500 hover:text-gray-900">
-          Admin
-        </a> </div>        
         <div class="md:hidden">
           <hr>
         </div>
@@ -93,12 +107,4 @@
       <p class="mt-8 text-base leading-6 text-center text-gray-400"> © 2021 Food Engine, Inc. All rights reserved. </p>
     </div>
   </section>
-</footer>
-
-
-
-
-
-
-
-   
+</footer>	  

@@ -8,23 +8,23 @@ class User {
 public static function isLoggedIn()
 {
 	//looks for cookie that is stored
-	if(isset($_COOKIE['SCHOOLPROJID'])) {
+	if(isset($_COOKIE['FOODENGINEID'])) {
 		//db check to see if the token is valid
-		if (DatabaseConnector::query('SELECT user_id FROM login_tokens WHERE token=:token', array(':token'=>sha1($_COOKIE['SCHOOLPROJID'])))) {
+		if (DatabaseConnector::query('SELECT user_id FROM login_tokens WHERE token=:token', array(':token'=>sha1($_COOKIE['FOODENGINEID'])))) {
 			//grab and return user id
-			$userid = DatabaseConnector::query('SELECT user_id FROM login_tokens WHERE token=:token', array(':token'=>sha1($_COOKIE['SCHOOLPROJID'])))[0]['user_id'];
+			$userid = DatabaseConnector::query('SELECT user_id FROM login_tokens WHERE token=:token', array(':token'=>sha1($_COOKIE['FOODENGINEID'])))[0]['user_id'];
 
-			if (isset($_COOKIE['SCHOOLPROJID_'])) {
+			if (isset($_COOKIE['FOODENGINEID_'])) {
 			return $userid;
-			} else {
+			} else {				
+				$domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;			
 				$cstrong = True;
 				$token = bin2hex(openssl_random_pseudo_bytes(64, $cstrong));
 				DatabaseConnector::query('INSERT INTO login_tokens (token, user_id) VALUES (:token, :user_id)', array(':token'=>sha1($token), ':user_id'=>$userid));
-				DatabaseConnector::query('DELETE FROM login_tokens WHERE token=:token', array(':token'=>sha1($_COOKIE['SCHOOLPROJID'])));
-				
-				setcookie("SCHOOLPROJID", $token, time() + 60 * 60 * 24 * 7, '/', 'postogon.com', TRUE, TRUE);
+				DatabaseConnector::query('DELETE FROM login_tokens WHERE token=:token', array(':token'=>sha1($_COOKIE['FOODENGINEID'])));
+				setcookie("FOODENGINEID", $token, time() + 60 * 60 * 24 * 7, '/', $domain, false);
 				// create a second cookie to force the first cookie to expire without logging the user out, this way the user won't even know they've been given a new login toke
-				setcookie("SCHOOLPROJID_", '1', time() + 60 * 60 * 24 * 3, '/', 'postogon.com', TRUE, TRUE);	
+				setcookie("FOODENGINEID_", '1', time() + 60 * 60 * 24 * 3, '/', $domain, false);	
 				//get loggedin user id
 				return $userid;
 			}
@@ -36,13 +36,12 @@ public static function isLoggedIn()
 
 public static function isAdmin($id)
 {
-	//check to see if the username is set then using the given $id. else return false.
+	//check to see if the user is an admin
 	if(DatabaseConnector::query('SELECT admin FROM users WHERE id=:id', array(':id'=>$id))[0]['admin'] == 1){
 	return true;
 	}
 	else{
 		return false;
-	
 }
 }
 
@@ -70,12 +69,12 @@ public static function getUserId($username)
 	}
 }
 
-public static function getUserVerified($username)
+public static function getUserEmployee($username)
 {
-	//check to see if the username is set then using the given $id. else return false.
-	if(DatabaseConnector::query('SELECT verified FROM users WHERE username=:username', array(':username'=>$username))[0]['verified']){
+	//check to see if the user an employee
+	if(DatabaseConnector::query('SELECT staff FROM users WHERE username=:username', array(':username'=>$username))[0]['staff']){
 	//return username
-	return DatabaseConnector::query('SELECT verified FROM users WHERE username=:username', array(':username'=>$username))[0]['verified'];
+	return true;
 	}
 	else {
 	return false;
@@ -129,100 +128,6 @@ public static function getUserStatus($username)
 	return false;
 	}
 }
-
-//function to see if a user is following another 
-public static function isUserFollowing($user, $follower)
-{
-if(DatabaseConnector::query('SELECT ID FROM followers WHERE user_id=:userid AND follower_id=:followerid', array(':userid' => $user,
-':followerid' => $follower))) {
-	//return username
-	return true;
-	}
-	else {
-	return false;
-	}
-}
-
-//function to see the amount of followers
-public static function countUserFollowers($user)
-{
-if(DatabaseConnector::query('SELECT count(*) as total FROM followers WHERE user_id=:userid', array(':userid' => $user))) {
-	//return the amount of followers the user has
-	return DatabaseConnector::query('SELECT count(*) as total FROM followers WHERE user_id=:userid', array(':userid' => $user));
-	}
-}
-
-//function to see the amount of followers
-public static function countUserFollowing($user)
-{
-if(DatabaseConnector::query('SELECT count(*) as total FROM followers WHERE follower_id=:userid', array(':userid' => $user))) {
-	//return the amount of people the user is following
-	return DatabaseConnector::query('SELECT count(*) as total FROM followers WHERE follower_id=:userid', array(':userid' => $user));
-	}
-}
-
-//function to see if a user is mutually following each-other
-public static function isUserFollowingMutual($user1, $user2)
-{
-	//if user1 is following user2
-if(self::isUserFollowing($user1, $user2)) {
-	//if user2 is following user2
-if(self::isUserFollowing($user2, $user1)) {
-			//returned true if user is following each other
-		return true;
-		}	
-	}
-	else {
-		//returned false if user is not following each other
-	return false;
-	}
-}
-
-//function to see if a user is mutually a contact
-public static function isUserContactMutual($user1, $user2)
-{
-	//if user1 is following user2
-if(self::isUserContact($user1, $user2)) {
-	//if user2 is following user2
-if(self::isUserContact($user2, $user1)) {
-			//returned true if user is following each other
-		return true;
-		}	
-	}
-	else {
-		//returned false if user is not contacts with each other
-	return false;
-	}
-}
-
-
-//function to see if a user is invited 
-public static function isUserInvited($user, $inviter)
-{
-if(DatabaseConnector::query('SELECT ID FROM invites WHERE user_id=:userid AND inviter_id=:inviterid', array(':userid' => $user,
-':inviterid' => $inviter))) {
-	return true;
-	}
-	else {
-	return false;
-	}
-}
-
-//function to see if a user is a contact 
-public static function isUserContact($user, $contact)
-{
-if(DatabaseConnector::query('SELECT ID FROM contacts WHERE user_id=:userid AND contact_id=:contactid', array(':userid' => $user,
-':contactid' => $contact))) {
-	return true;
-	}
-	else {
-	return false;
-	}
-}
-
-
-
-
 
 }
 

@@ -1,9 +1,6 @@
 <?php
 if (!User::isLoggedin()){
-	header("Location: https://postogon.com/schoolproj/public_html/login");
+	header("Location: ./login");
 }
 $profile = User::getUsername($userid);
-
-
-
 ?>

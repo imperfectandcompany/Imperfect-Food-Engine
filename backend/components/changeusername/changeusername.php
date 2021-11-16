@@ -4,7 +4,8 @@ $username = (DatabaseConnector::query('SELECT username FROM users WHERE id=:user
 	$userwarning = 0;
 
 	try{
-		if(isset($_POST['username']) && $_POST['username']){ 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {		
+		if(isset($_POST['username']) && $_POST['username']){		
 		if($username == $_POST['username']){ throw new Exception('Error: This is already your username!'); }
 		if(DatabaseConnector::query('SELECT username from users WHERE username=:username', array('username'=>$_POST['username']))){
 			throw new Exception('Error: This username is already taken!');
@@ -26,7 +27,10 @@ $username = (DatabaseConnector::query('SELECT username FROM users WHERE id=:user
 $username = (DatabaseConnector::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username']);		
 		$userwarning = 1;
 		$success="username";
-	} 
+	} else {
+throw new Exception('Error: You must pick a username!');
+	}
+	}
 	}
 catch (Exception $e) {
 			$userwarning = 1;	

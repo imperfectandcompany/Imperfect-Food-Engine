@@ -7,12 +7,11 @@ $GLOBALS['devmode'] = 1;
 
 $GLOBALS['db_conf']['db_host'] = "127.0.0.1";
 $GLOBALS['db_conf']['port'] = "3306";
-$GLOBALS['db_conf']['db_db'] = "";
-$GLOBALS['db_conf']['db_user'] = "";
+$GLOBALS['db_conf']['db_db'] = "foodengine";
+$GLOBALS['db_conf']['db_user'] = "root";
 $GLOBALS['db_conf']['db_pass'] = "";
 $GLOBALS['db_conf']['db_charset'] = "utf8";
 
-$GLOBALS['captchakey'] = "";
  
 if($GLOBALS['config']['url_offset'] > 0){
     $x = 0; while($x < ($GLOBALS['config']['url_offset'])){ unset($GLOBALS['url_loc'][$x]); $x++; }
@@ -34,7 +33,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 include("../functions/functions.general.php");
 include("../classes/class.user.php");		
-include("../classes/class.comment.php");	   
 include("../classes/class.order.php");	   
 include("../classes/class.database.php");
 include("../classes/class.general.php");

@@ -1,6 +1,6 @@
 <?php
 if (User::isLoggedin()){
-	header("Location: https://postogon.com/schoolproj/public_html/home");
+	header("Location: ./home");
 }
 
 if (isset($_POST['login'])) {
@@ -20,12 +20,12 @@ if (DatabaseConnector::query('SELECT email from users WHERE email=:email', array
 	if(password_verify($password, DatabaseConnector::query('SELECT password from users WHERE email=:email', array(':email'=>$emailoruser))[0]['password'])){
 		$success = 1;
 		$cstrong = True;
+		$domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;		
 		$token = bin2hex(openssl_random_pseudo_bytes(64, $cstrong));
 		$user_id = DatabaseConnector::query('SELECT id from users WHERE email=:email', array(':email'=>$emailoruser))[0]['id'];
 		DatabaseConnector::query('INSERT INTO login_tokens (token, user_id) VALUES (:token, :user_id)', array(':token'=>sha1($token), ':user_id'=>$user_id));
-		//pass cookie name, token itself, expiry date = current time + amount valid for which we picked for one week, then location of the server the cookie is valid for.. / for everywhere, domain cookie is valid on... localhost, and ssl is true, and http only which means http only meaning js cant access which prevents XSS ATTACKS.
-		setcookie("SCHOOLPROJID", $token, time() + 60 * 60 * 24 * 7, '/', 'postogon.com', TRUE, TRUE);
-		setcookie("SCHOOLPROJID_", '1', time() + 60 * 60 * 24 * 3, '/', 'postogon.com', TRUE, TRUE);
+		setcookie("FOODENGINEID", $token, time() + 60 * 60 * 24 * 7, '/', $domain, false);
+		setcookie("FOODENGINEID_", '1', time() + 60 * 60 * 24 * 3, '/', $domain, false);
 	} else {
 		throw new Exception('Error: Password is incorrect!');
 	}
@@ -37,12 +37,12 @@ if (DatabaseConnector::query('SELECT username from users WHERE username=:usernam
 	if(password_verify($password, DatabaseConnector::query('SELECT password from users WHERE username=:username', array(':username'=>$emailoruser))[0]['password'])){
 		$success = 1;
 		$cstrong = True;
+		$domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;			
 		$token = bin2hex(openssl_random_pseudo_bytes(64, $cstrong));
 		$user_id = DatabaseConnector::query('SELECT id from users WHERE username=:username', array(':username'=>$emailoruser))[0]['id'];
 		DatabaseConnector::query('INSERT INTO login_tokens (token, user_id) VALUES (:token, :user_id)', array(':token'=>sha1($token), ':user_id'=>$user_id));
-		//pass cookie name, token itself, expiry date = current time + amount valid for which we picked for one week, then location of the server the cookie is valid for.. / for everywhere, domain cookie is valid on... postogon.com, and ssl is true, and http only which means http only meaning js cant access which prevents XSS ATTACKS.
-		setcookie("SCHOOLPROJID", $token, time() + 60 * 60 * 24 * 7, '/', 'postogon.com', TRUE, TRUE);
-		setcookie("SCHOOLPROJID_", '1', time() + 60 * 60 * 24 * 3, '/', 'postogon.com', TRUE, TRUE);
+		setcookie("FOODENGINEID", $token, time() + 60 * 60 * 24 * 7, '/', $domain, false);
+		setcookie("FOODENGINEID_", '1', time() + 60 * 60 * 24 * 3, '/', $domain, false);
 	} else {
 		throw new Exception('Error: Password is incorrect!');
 	}

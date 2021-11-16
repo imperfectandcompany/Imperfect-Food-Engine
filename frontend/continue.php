@@ -4,7 +4,7 @@
     <div x-data="{ open: false }" class="flex-1 md:flex">
       <div class="flex items-center flex-1">
         <a href="./">
-          <div class=" md:flex-1 mr-2 text-white select-none font-bold">Food Engine - Order</div>
+          <div class=" md:flex-1 mr-2 text-white select-none font-bold">Food Engine - Review Order</div>
         </a>
         <button @click="open = ! open" class="md:hidden ml-auto rounded px-4 py-2 focus:outline-none bg-green-400">
           <template x-if="!open">
@@ -35,34 +35,25 @@
 </header>
    <div class="lg:flex">
    <main class="container flex mx-auto w-full items-center justify-center">
-   <div class="flex flex-col space-y-4">
-   <div class="flex flex-col pt-4 m-4">
+   <div class="flex flex-col space-y-2">
+   <div class="flex flex-col pt-2 m-4">
 <?php
    /*Call our notification handling*/ include("../frontend/sitenotif.php");
    ?>
   </div>
-   <ul class="flex flex-col p-2">
+   <ul class="flex flex-col px-2">
    <div class="mb-2">
 <div class="text-gray-600">Order type:</div><div id="ordertype"></div> <script>
 var ordertype = "<?php echo $_GET['type'];?>".charAt(0).toUpperCase() + "<?php echo $_GET['type'];?>".slice(1).toLowerCase();
-document.getElementById("ordertype").innerHTML=ordertype</script>
-
-		<?php if($customizePizza === true):?>
-<div>
-<div class="flex flex-row flex-row-reverse"><a href="https://postogon.com/school/public_html/order?type=<?php echo $_GET["type"];?>" class="px-4 py-2 bg-green-400 text-white text-semibold rounded hover:bg-green-600 hover:text-green-400 cursor-pointer transition">Back to Menu</a></div>
-</div><?php endif;?>
-
-</div>
-  <section class="container mx-auto pt-6 -mb-6">
+document.getElementById("ordertype").innerHTML=ordertype</script></div>
+  <section class="container mx-auto pt-3 -mb-6">
         <div class="sm:flex flex-wrap">
-		<?php if($customizePizza === false):?>
-        <?php foreach($orders as $item): ?>
+        <?php foreach($cartOrders as $item): ?>
           <div class="sm:w-6/12 lg:w-4/12 px-4 mb-6">
             <div class="md:flex md:items-stretch md:shadow-lg md:bg-white md:rounded-lg">
               <div class="md:w-6/12 lg:w-5/12">
                 <img class="rounded-lg md:rounded-r-none w-full h-full object-cover object-left" src="<?php echo $item['picture'];?>">
               </div>
-
               <div class="relative self-center mx-2 md:mx-0 p-2 md:p-4 shadow-lg md:shadow-none bg-white md:bg-transparent rounded-lg md:rounded-l-none -mt-2 md:mt-0 md:w-6/12 lg:w-7/12">
                 <h2 class="text-xl tracking-tight font-semibold uppercase text-secondary mb-2">
                 <?php echo $item['name'];?>
@@ -73,6 +64,7 @@ document.getElementById("ordertype").innerHTML=ordertype</script>
                 <span class="mt-2 text-sm font-semibold text-gray-800 block">
                 $<?php echo $item['price']; ?>
                 </span>
+                <span class="mt-2 text-sm text-yellow-600 block">
                 <form method="post">
             <input name="id" type="hidden" value="<?php echo $item['id']; ?>"></input>
             <?php if(order::addedItem($item['id'])):?>
@@ -80,110 +72,20 @@ document.getElementById("ordertype").innerHTML=ordertype</script>
             <button class="text-center w-full text-sm bg-red-700 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Remove Item</button>
             <?php else: ?>
             <input name="insert" type="hidden"></input>     
-            <button class="text-center w-full text-sm bg-blue-500 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Add Item</button>
+            <button class="text-center w-full text-sm bg-red-700 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Add Item</button>
             <?php endif; ?>            
             </form>
-              </div>
-            </div>
-          </div>
-          <?php endforeach; ?>		
-<div class="sm:w-6/12 lg:w-4/12 px-4 mb-6">
-            <div class="md:flex md:items-stretch md:shadow-lg md:bg-white md:rounded-lg">
-              <div class="md:w-6/12 lg:w-5/12">
-                <img class="rounded-lg md:rounded-r-none w-full h-full object-cover object-left" src="https://www.idahopizzacompany.com/Documents%20and%20Settings/15/Site%20Documents/2015/Feature/feature-allyoucaneat.jpg">
-              </div>
-              <div class="relative self-center mx-2 md:mx-0 p-2 md:p-4 shadow-lg md:shadow-none bg-white md:bg-transparent rounded-lg md:rounded-l-none -mt-2 md:mt-0 md:w-6/12 lg:w-7/12">
-                <h2 class="text-xl tracking-tight font-semibold uppercase text-secondary mb-2">
-                Pizza                </h2>
-                <p class="text-gray-700 leading-snug">
-                Create your own pizza</p>
-                <span class="mt-2 text-sm font-semibold text-gray-800 block">
-                Starts from $7.50</span>
-							<?php if(order::customizeActive()):?>
-                <form method="post">
-            <input name="pizza" type="hidden" value="pizza">
-                        <input name="customize" type="hidden">     
-            <button class="text-center w-full text-sm bg-blue-500 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Edit Pizza</button>
-            </form>
-			                        <?php endif; ?>
-									
-							<?php if(order::customizeActive()):?>
-                <form method="post">
-            <input name="pizza" type="hidden" value="pizza">
-                        <input name="remove" type="hidden">     
-            <button class="text-center w-full text-sm bg-red-500 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Remove Pizza</button>
-            </form>
-			                        <?php endif; ?>
-							<?php if(!order::customizeActive()):?>
-                <form method="post">
-            <input name="pizza" type="hidden" value="pizza">
-                        <input name="customize" type="hidden">     
-            <button class="text-center w-full text-sm bg-blue-500 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Add Pizza</button>
-            </form>
-			                        <?php endif; ?>			
-									
-              </div>
-            </div>
-          </div>
-			<?php endif;?>
-			
-			
-			
-			
-			
-			
-			
-			
-		<?php if($customizePizza === true):?>
-        <?php foreach($toppings as $item): ?>
-          <div class="sm:w-6/12 lg:w-4/12 px-4 mb-6">
-            <div class="md:flex md:items-stretch md:shadow-lg md:bg-white md:rounded-lg">
-              <div class="md:w-6/12 lg:w-5/12">
-                <img class="rounded-lg md:rounded-r-none w-full h-full object-cover object-left" src="<?php echo $item['picture'];?>">
-              </div>
-              <div class="relative self-center mx-2 md:mx-0 p-2 md:p-4 shadow-lg md:shadow-none bg-white md:bg-transparent rounded-lg md:rounded-l-none -mt-2 md:mt-0 md:w-6/12 lg:w-7/12">
-                <h2 class="text-xl tracking-tight font-semibold uppercase text-secondary mb-2">
-                <?php echo $item['name'];?>
-                </h2>
-                <p class="text-gray-700 leading-snug">
-                <?php echo $item['description']; ?>
-                </p>
-                <span class="mt-2 text-sm font-semibold text-gray-800 block">
-                $<?php echo $item['price']; ?>
                 </span>
-                <form method="post">
-            <input name="customizepizza" type="hidden"></input>
-            <input name="id" type="hidden" value="<?php echo $item['id']; ?>"></input>
-            <?php if(order::addedTopping($item['id'])):?>
-		      <input name="delete" type="hidden"></input>     
-            <button class="text-center w-full text-sm bg-red-700 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Remove Item</button>
-            <?php else: ?>
-            <input name="insert" type="hidden"></input>     
-            <button class="text-center w-full text-sm bg-blue-500 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Add Item</button>
-            <?php endif; ?>            
-            </form>
               </div>
             </div>
           </div>
-          <?php endforeach; ?>	
-		<?php endif;?>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+          <?php endforeach; ?>  
+          <div class="text-gray-600 font-bold">Total: $<?php echo array_sum(array_column($cartOrders,'price'));
+ ?></div>
         </div>
       </section>
 		<li>
-		<button onclick="window.location.href='./continue?type=<?php if(isset($_GET['type'])){echo $_GET['type'];}?>'" class="mt-2 block flex mx-auto mt-10 md:ml-auto md:mr-32 uppercase shadow bg-blue-500 transition  hover:bg-blue-600 focus:shadow-outline focus:outline-none text-white text-xs py-3 px-10 rounded">Continue</button>
+		<button onclick="window.location.href='./review'" class="mt-2 block flex mx-auto mt-10 md:ml-auto md:mr-32 uppercase shadow bg-blue-500 transition  hover:bg-blue-600 focus:shadow-outline focus:outline-none text-white text-xs py-3 px-10 rounded">Submit Order</button>
 		</li>
     </ul>
   </div>

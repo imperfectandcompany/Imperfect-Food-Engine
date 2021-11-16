@@ -1,6 +1,6 @@
 <?php
 if (User::isLoggedin()){
-	header("Location: https://postogon.com/lit/public_html/home");
+	header("Location: ./home");
 }
 
 if (isset($_POST['createaccount'])) {
@@ -26,7 +26,7 @@ try{
 	
 	//php built in validator for email, if valid then insert
 	if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-	DatabaseConnector::query('INSERT INTO users (email, password, verified) VALUES (:email, :password, :verified)', array(':email'=>$email, ':password'=>password_hash($password, PASSWORD_BCRYPT), ':verified'=>0));
+	DatabaseConnector::query('INSERT INTO users (email, password, staff) VALUES (:email, :password, :staff)', array(':email'=>$email, ':password'=>password_hash($password, PASSWORD_BCRYPT), ':staff'=>0));
 	$success = 1;
 	} else {
 		throw new Exception('Error: Email is invalid!'); 	

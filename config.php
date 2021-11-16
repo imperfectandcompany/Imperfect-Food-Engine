@@ -9,7 +9,6 @@ switch ($GLOBALS['url_loc'][1])
         $FRONTEND = "signup";
     break;
     case "join":
-	echo "tye";
         header("location:../public_html/signup");
     break;
     case "signin":
@@ -22,17 +21,24 @@ switch ($GLOBALS['url_loc'][1])
         $FOOTER = "home";
         $HEADER = "home";
     break;
-    case "createusername":
-        $PAGE_TITLE = "Create Username";
-        $BACKEND = "create_a_user";
-        $FRONTEND = "create_a_user";	
+    case "continue":
+        $PAGE_TITLE = "Review your order";
+        $BACKEND = "continue";
+        $FRONTEND = "continue";		
+        $FOOTER = "continue";
+        $HEADER = "continue";
+    break;  
+    case "onboarding":
+        $PAGE_TITLE = "Onboarding";
+        $BACKEND = "onboarding";
+        $FRONTEND = "onboarding";	
     break;
-    case "settings":
-        $PAGE_TITLE = "Settings";
-        $BACKEND = "settings";
-        $FRONTEND = "settings";	
-        $FOOTER = "settings";
-        $HEADER = "settings";
+    case "admin":
+        $PAGE_TITLE = "Admin";
+        $BACKEND = "admin";
+        $FRONTEND = "admin";	    
+        $FOOTER = "admin";
+        $HEADER = "admin";
     break;
     case "reset":
         $PAGE_TITLE = "Reset";
@@ -43,23 +49,6 @@ switch ($GLOBALS['url_loc'][1])
         $PAGE_TITLE = "Redeem";
         $BACKEND = "redeem";
         $FRONTEND = "redeem";
-    break;
-    case "profile":
-        $PAGE_TITLE = "Profile";
-        $BACKEND = "profile";
-        $FRONTEND = "profile";
-        $FOOTER = "profile";
-        $HEADER = "profile";
-    break;
-    case "timeline":
-        $PAGE_TITLE = "Timeline";
-        $BACKEND = "timeline";
-        $FRONTEND = "timeline";
-    break;
-    case "notifications":
-        $PAGE_TITLE = "Notifications";
-        $BACKEND = "notifications";
-        $FRONTEND = "notifications";
     break;
     case "logout":
         $PAGE_TITLE = "Logout";
