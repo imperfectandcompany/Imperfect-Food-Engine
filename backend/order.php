@@ -7,7 +7,6 @@ $cartOrders = order::getUserCart(User::isLoggedIn());
 
 if($_SERVER['REQUEST_METHOD'] == "POST"){
 	if(isset($_POST["id"]) && isset($_POST["insert"]) && isset($_POST["customizepizza"])){
-		echo "yeet";
 	$item = $_POST["id"];
 	order::addTopping($item);
 		header("refresh: 0;");

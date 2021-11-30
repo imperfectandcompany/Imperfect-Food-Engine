@@ -117,6 +117,22 @@ public static function getUserLastSeen($username)
 	}
 }
 
+public static function addUserAddress($address)
+{
+	$userid = self::isLoggedIn();
+	DatabaseConnector::query('UPDATE users SET address=:address WHERE id=:userid', array(':userid'=>$userid,':address'=>$address));		
+
+}
+
+public static function getAddress(){
+	$user_id = User::isLoggedIn();
+	if(DatabaseConnector::query('SELECT address FROM users WHERE id=:userid', array(':userid'=>$user_id))){
+		return DatabaseConnector::query('SELECT address FROM users WHERE id=:userid', array(':userid'=>$user_id))[0]['address'];
+	} else {
+		return false;
+		}
+}
+
 public static function getUserStatus($username)
 {
 	//grabs the createdAt of the given username $id. else return false.

@@ -21,6 +21,13 @@ switch ($GLOBALS['url_loc'][1])
         $FOOTER = "home";
         $HEADER = "home";
     break;
+    case "status":
+        $PAGE_TITLE = "View your status";
+        $BACKEND = "status";
+        $FRONTEND = "status";		
+        $FOOTER = "status";
+        $HEADER = "status";
+    break;	
     case "continue":
         $PAGE_TITLE = "Review your order";
         $BACKEND = "continue";

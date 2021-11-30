@@ -13,6 +13,16 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 	$item = $_POST["id"];
 	order::removeItem($item);		
 	}
+	elseif(isset($_POST["placeorder"]) && isset($_POST["delivery"])){
+	//we want to set ordered as one for each item that the user currently has...
+      foreach($cartOrders as $item){
+	  order::placeOrder($item['id']);
+	  }
+	  //attach delivery address
+	user::addUserAddress($_POST["address"]); 
+		$urlPage = "https://postogon.com/school/public_html/status";
+		header("refresh: 0; url=".$urlPage."");
+	}
 	elseif(isset($_POST["admin"])){
 	order::addMenuItem($_POST["name"], $_POST["price"], $_POST["description"], $_POST["emoji"]);
 	}

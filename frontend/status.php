@@ -4,7 +4,7 @@
     <div x-data="{ open: false }" class="flex-1 md:flex">
       <div class="flex items-center flex-1">
         <a href="./">
-          <div class=" md:flex-1 mr-2 text-white select-none font-bold">Food Engine - Review Order</div>
+          <div class=" md:flex-1 mr-2 text-white select-none font-bold">Food Engine - Order Status</div>
         </a>
         <button @click="open = ! open" class="md:hidden ml-auto rounded px-4 py-2 focus:outline-none bg-green-400">
           <template x-if="!open">
@@ -44,9 +44,7 @@
    <ul class="flex flex-col px-2">
    <div class="mb-2">
 
-<div class="text-gray-600">Order type:</div><div id="ordertype"></div> <script>
-var ordertype = "<?php echo $_GET['type'];?>".charAt(0).toUpperCase() + "<?php echo $_GET['type'];?>".slice(1).toLowerCase();
-document.getElementById("ordertype").innerHTML=ordertype</script></div>
+<div class="text-gray-600">Order:</div><div id="ordertype"><?php if($isDelivery == true):?><?php echo user::getAddress(); ?><?php endif;?></div> </div>
   <section class="container mx-auto pt-3 -mb-6">
         <div class="sm:flex flex-wrap">
         <?php foreach($cartOrders as $item): ?>
@@ -68,12 +66,9 @@ document.getElementById("ordertype").innerHTML=ordertype</script></div>
                 <span class="mt-2 text-sm text-yellow-600 block">
                 <form method="post">
             <input name="id" type="hidden" value="<?php echo $item['id']; ?>"></input>
-            <?php if(order::addedItem($item['id'])):?>
-		      <input name="delete" type="hidden"></input>     
-            <button class="text-center w-full text-sm bg-red-700 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Remove Item</button>
-            <?php else: ?>
-            <input name="insert" type="hidden"></input>     
-            <button class="text-center w-full text-sm bg-red-700 rounded py-2 text-white mt-2" onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();">Add Item</button>
+            <?php if(order::placedItem($item['id'])):?>
+            <button class="text-center w-full text-sm bg-gray-700 rounded py-2 text-white mt-2 select-none">Ordered</button>
+
             <?php endif; ?>            
             </form>
                 </span>
@@ -81,23 +76,15 @@ document.getElementById("ordertype").innerHTML=ordertype</script></div>
             </div>
           </div>
           <?php endforeach; ?>  
-
+          <div class="text-gray-600 font-bold">Total: $<?php echo array_sum(array_column($cartOrders,'price'));
+ ?></div>
         </div>
       </section>
 		<li>
 		                <form method="post">
-								      <input name="placeorder" type="hidden"></input>  
-   <?php if($_GET['type'] == 'delivery'): ?>
-								      <input name="delivery" type="hidden"></input>  <br>
-									     <?php if($_GET['type'] == 'delivery'): ?>
-   Please enter your address
-       <input type="text" placeholder="123 Sesame Street" name="address" value="" id="address" class="block mb-2 bg-gray-100 p-2 rounded-lg border-2 border-indigo-500 shadow-md focus:outline-none focus:border-indigo-600" /><br>
-   <?php endif;?>
-   <?php endif;?>	
-          <div class="text-gray-600 font-bold">Total: $<?php echo array_sum(array_column($cartOrders,'price'));
- ?></div>
-   
-		<button onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();" class="mt-2 block flex mx-auto mt-10 md:ml-auto md:mr-32 uppercase shadow bg-blue-500 transition  hover:bg-blue-600 focus:shadow-outline focus:outline-none text-white text-xs py-3 px-10 rounded">Submit Order</button>
+								      <input name="cancelorder" type="hidden"></input>  
+							  
+		<button onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();" class="mt-2 block flex mx-auto mt-10 md:ml-auto md:mr-32 uppercase shadow bg-red-500 transition  hover:bg-blue-600 focus:shadow-outline focus:outline-none text-white text-xs py-3 px-10 rounded">Cancel Order</button>
 		</form>
 		</li>
     </ul>

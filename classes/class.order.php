@@ -4,7 +4,7 @@ class order {
 public static function addItem($item){
 	try{ 
 	$user_id = User::isLoggedIn();
-	if(!DatabaseConnector::query('SELECT user_id FROM order_cart WHERE item_id=:itemid AND user_id=:userid', array(':itemid'=>$item,':userid'=>$user_id))){
+	if(!DatabaseConnector::query('SELECT user_id FROM order_cart WHERE item_id=:itemid AND user_id=:userid AND ordered = 0', array(':itemid'=>$item,':userid'=>$user_id))){
 	DatabaseConnector::query('INSERT INTO order_cart (user_id, item_id) VALUES (:userid, :itemid)', array(':userid'=>$user_id, ':itemid'=>$item));
 	header("refresh: 0;");
 	}
@@ -20,7 +20,16 @@ return DatabaseConnector::query('SELECT * FROM pizza_toppings');
 
 public static function addedItem($item){
 	$user_id = User::isLoggedIn();
-	if(DatabaseConnector::query('SELECT user_id FROM order_cart WHERE item_id=:itemid AND user_id=:userid', array(':itemid'=>$item,':userid'=>$user_id))){
+	if(DatabaseConnector::query('SELECT user_id FROM order_cart WHERE item_id=:itemid AND user_id=:userid AND ordered = 0', array(':itemid'=>$item,':userid'=>$user_id))){
+		return true;
+	} else {
+		return false;
+		}
+}
+
+public static function placedItem($item){
+	$user_id = User::isLoggedIn();
+	if(DatabaseConnector::query('SELECT user_id FROM order_cart WHERE item_id=:itemid AND user_id=:userid AND ordered = 1', array(':itemid'=>$item,':userid'=>$user_id))){
 		return true;
 	} else {
 		return false;
@@ -45,6 +54,15 @@ public static function customizeActive(){
 		}
 }
 
+public static function deliveryActive(){
+	$user_id = User::isLoggedIn();
+	if(DatabaseConnector::query('SELECT address FROM users WHERE id=:userid AND address IS NOT NULL', array(':userid'=>$user_id))){
+		return true;
+	} else {
+		return false;
+		}
+}
+
 public static function customize(){
 	$user_id = User::isLoggedIn();
 	if(self::customizeActive() == false){
@@ -57,6 +75,13 @@ public static function RemovePizza(){
 	if(self::customizeActive() == true){
 	DatabaseConnector::query('DELETE FROM order_pizza WHERE user_id=:id', array(':id'=>$user_id));
 	}
+}
+
+public static function CancelOrder(){
+	$user_id = User::isLoggedIn();
+
+	DatabaseConnector::query('DELETE FROM order_cart WHERE user_id=:id AND ordered = 1', array(':id'=>$user_id));
+
 }
 
 public static function addMenuItem($name, $price, $description, $picture){
@@ -142,7 +167,7 @@ public static function getOrderName($item_id){
 
 public static function getOrderDescription($item_id){	
 	try{ 
-	if(DatabaseConnector::query('SELECT description FROM menu_items WHERE id=:itemid', array(':itemid'=>$item_id))){
+	if(DatabaseConnector::query('SELECT ordered WHERE id=:itemid A', array(':itemid'=>$item_id))){
 	return DatabaseConnector::query('SELECT description FROM menu_items WHERE id=:itemid', array(':itemid'=>$item_id))[0]["description"];
 	}
             throw new Exception('Error: Description undefined!');
@@ -150,6 +175,22 @@ public static function getOrderDescription($item_id){
                 $GLOBALS['errors'][] = $e->getMessage();
             }
 }
+
+public static function placeOrder($item_id){	
+	try{ 
+	$iduser = user::isLoggedIn();
+	//make sure item is in users cart and not already ordered
+	if(DatabaseConnector::query('SELECT * FROM order_cart WHERE item_id=:itemid AND user_id=:userid AND ordered = 0', array(':userid'=>$iduser,':itemid'=>$item_id))){
+	DatabaseConnector::query('UPDATE order_cart SET ordered=1 WHERE item_id=:itemid AND user_id=:userid AND ordered = 0', array(':userid'=>$iduser,':itemid'=>$item_id));		
+	return true;
+	}
+            throw new Exception('Error: Item undefined!');
+	}	catch (Exception $e) {
+                $GLOBALS['errors'][] = $e->getMessage();
+            }
+}
+
+
 
 public static function getOrderPrice($item_id){	
 	try{ 
@@ -183,8 +224,16 @@ public static function getUserCart($user_id){
 return DatabaseConnector::query('SELECT DISTINCT menu_items.id, menu_items.name, menu_items.price, menu_items.description, menu_items.picture FROM menu_items, order_cart, users
 WHERE menu_items.id = order_cart.item_id
 AND users.id = order_cart.user_id
+AND ordered = 0
 AND order_cart.user_id = '.$user_id.'');}
 
+
+public static function getUserPlaced($user_id){
+return DatabaseConnector::query('SELECT DISTINCT menu_items.id, menu_items.name, menu_items.price, menu_items.description, menu_items.picture FROM menu_items, order_cart, users
+WHERE menu_items.id = order_cart.item_id
+AND users.id = order_cart.user_id
+AND ordered = 1
+AND order_cart.user_id = '.$user_id.'');}
 
 public static function fetchMenu(){	
 return DatabaseConnector::query('SELECT * FROM menu_items');
