@@ -18,6 +18,7 @@
           </template>
         </button>
       </div>
+	  
       <div x-bind:class="! open ? 'hidden' : 'block'" class="md:flex mt-1 md:mt-0 space-y-2 md:space-y-0 flex-row-reverse md:pr-48">
 	  <div class="pt-4 md:pt-0">
         <a href="./logout">
@@ -67,7 +68,7 @@
                 <form method="post">
             <input name="id" type="hidden" value="<?php echo $item['id']; ?>"></input>
             <?php if(order::placedItem($item['id'])):?>
-            <button class="text-center w-full text-sm bg-gray-700 rounded py-2 text-white mt-2 select-none">Ordered</button>
+            <button class="text-center w-full text-sm bg-gray-700 rounded py-2 text-white mt-2 select-none">Added</button>
 
             <?php endif; ?>            
             </form>
@@ -81,11 +82,24 @@
         </div>
       </section>
 		<li>
+
+<div class="flex  justify-end items-end mb-2">
+
 		                <form method="post">
 								      <input name="cancelorder" type="hidden"></input>  
 							  
-		<button onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();" class="mt-2 block flex mx-auto mt-10 md:ml-auto md:mr-32 uppercase shadow bg-red-500 transition  hover:bg-blue-600 focus:shadow-outline focus:outline-none text-white text-xs py-3 px-10 rounded">Cancel Order</button>
+		<button onclick="
+		this.disabled=true;this.value='Sending, please wait...';this.form.submit();" class="mt-2 block flex mx-auto mt-10 md:ml-auto md:mr-32 uppercase shadow bg-white transition  hover:bg-red-500 hover:text-white focus:shadow-outline focus:outline-none text-red-500 text-xs py-3 px-10 rounded">Cancel Order</button>
 		</form>
+		                <form method="post">
+								      <input name="placeorder" type="hidden"></input>  
+							  
+		<button onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();" class="mt-2 block flex mx-auto mt-10  uppercase shadow bg-red-500 transition  hover:bg-white hover:text-red-500 focus:shadow-outline focus:outline-none text-white text-xs py-3 px-10 rounded">Place Order</button>
+		</form>
+
+		</div>	<div class="flex justify-end items-end"> 
+    <button type="submit" class="bg-yellow-400 rounded transition border hover:bg-white hover:border hover:border-yellow-400  hover:border-2 px-6 py-4 cursor-pointer" name="paypal"><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" border="0" alt="PayPal Logo"></button>
+</div>
 		</li>
     </ul>
   </div>
@@ -147,15 +161,12 @@ session_start();
 <style>
 button, input[type="submit"], input[type="reset"] {
 	background: none;
-	color: inherit;
-	border: none;
+	color: 
 	padding: 0;
 	font: inherit;
 	cursor: pointer;
 	outline: inherit;
 }
 </style>
-
-
 
 
