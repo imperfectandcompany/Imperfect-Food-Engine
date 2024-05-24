@@ -3,7 +3,7 @@ class DatabaseConnector {
 
 	private static function connect() {
 		
-		$pdo = new PDO('mysql:host=127.0.0.1;dbname=igfastdl_foodengine;charset=utf8mb4', 'igfastdl', 'UR5WnRgRgUcT9mh5');
+		$pdo = new PDO('mysql:host=127.0.0.1;dbname=imperfect_foodengine;charset=utf8mb4', 'root', '');
 //then we tell pdo which password
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

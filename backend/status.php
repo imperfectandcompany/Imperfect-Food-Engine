@@ -17,7 +17,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
 	order::CancelOrder();
 
-	$urlPage = "https://postogon.com/foodengine/public_html/";
+	$urlPage = "https://yourhosthere.com/foodengine/public_html/";
 		header("refresh: 0; url=".$urlPage."");
 	}
 	
@@ -27,11 +27,11 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         'cmd'			=> '_cart',
         'upload'        => '1',
         'lc'			=> 'EN',
-        'business' 		=> 'payments@imperfectandcompany.com',
-        'cancel_return'	=> 'https://postogon.com/foodengine/public_html/status?cancel=true',
-        'notify_url'	=> 'https://postogon.com/foodengine/public_html/status?ipn_listener=paypal',
+        'business' 		=> 'youremailhere@gmail.com',
+        'cancel_return'	=> 'https://yourhosthere.com/foodengine/public_html/status?cancel=true',
+        'notify_url'	=> 'https://yourhosthere.com/foodengine/public_html/status?ipn_listener=paypal',
         'currency_code'	=> 'USD',
-        'return'        => 'https://postogon.com/foodengine/public_html/status&success=true'
+        'return'        => 'https://yourhosthere.com/foodengine/public_html/status&success=true'
     );
 	
 
@@ -65,11 +65,11 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
 	if($_GET["cancel"] == "true"){
 			order::CancelOrder();
 
-			$urlPage = "https://postogon.com/school/public_html/";
+			$urlPage = "https://yourhosthere.com/school/public_html/";
 		header("refresh: 0; url=".$urlPage."");
 	} else {
 	
-			$urlPage = "https://postogon.com/school/public_html/status";
+			$urlPage = "https://yourhosthere.com/school/public_html/status";
 		header("refresh: 0; url=".$urlPage."");
 	}
 
